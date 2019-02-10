@@ -89,11 +89,11 @@ class Librotransaccion {
           // Recorremos el map de registros bancarios para sumar al receptor y restar al emisor partiendo de su saldo.
           if (cuentaentrada.receptor == cuenta.nombre) {
             // console.log("sumo");
-            contador = contador + cuentaentrada.cantidad;
+            contador += cuentaentrada.cantidad;
           } else {
             if (cuentaentrada.remitente == cuenta.nombre) {
               // No hace falta restarle la comision ya que se genera una transacción para cada comisión
-              contador = contador - cuentaentrada.cantidad;
+              contador -= cuentaentrada.cantidad;
               // console.log("resto");
             }
           }
@@ -117,6 +117,7 @@ class Librotransaccion {
         })
     );
   }
+
   // Esta función lista un array por consola
   listarElementos(arr) {
     console.log("Listado de movimientos en la cuenta");
