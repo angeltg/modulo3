@@ -1,0 +1,115 @@
+1. Cree una base de datos llamada usermanaged, borrar  y volver a crear. Compruebe en qué base de datos se está trabando.
+
+db.use usermanaged
+db
+db.droDatabase()
+db
+
+2. Crear una colección e insertar un registro
+Cree una colección llamada clientes en usermanaged creada en el Ejercicio 1 e inserte el documento a continuación. Compruebe si el documento está insertado correctamente.
+
+db.clientes.insert({ _id:1, "firstName":"John", 
+"lastName":"West", 
+"email":"john.west@mail.com", 
+"phone":"032345432134",
+"BusinessType": ["Sell", "Sugar", "Drinks"],
+"Reference":100,
+"Company":"Coca-Cola"})
+
+db.clientes.find()
+
+3. Carga de archivos JSON
+3.1. Cree una colección llamada transactions en usermanaged (borrar si ya existe) y cargue de forma masiva los datos de un archivo json, transaction.json (vea los datos al final de las preguntas).	
+
+db.createCollection('transactions')
+
+Esto me daba error
+mongoimport --db usermanaged --collection transactions --file /home/angeltellez/Documents/javascript/modulo3/dia-5-mongo/transaction.json --jsonArray
+
+
+db.transactions.insert([
+{
+    "_id": 100,
+    "Name": "John",
+    "TransactionId": "tran1",
+  "Transaction": [
+    {
+    "ItemId":"a100",
+    "price": 200
+    },
+    {
+    "ItemId":"a110",
+    "price": 200   
+    }
+  ],
+  "Subscriber": true,
+  "Payment": {
+    "Type": "Credit-Card",
+    "Total": 400,
+    "Success": true
+  },
+  "Note": "1st Complete Record"
+}
+,
+{
+    "_id": 101,
+    "Name": "Tom",
+    "TransactionId": "tran2",
+  "Transaction": [
+    {
+    "ItemId":"a100",
+    "price": 200
+    },
+    {
+    "ItemId":"a110",
+    "price": 200   
+    }
+  ],
+  "Subscriber": true,
+  "Payment": {
+    "Type": "Debit-Card",
+    "Total": 400,
+    "Success": true
+  },
+  "Note":null
+},
+{
+    "_id": 102,
+    "Name": "Margaret",
+    "TransactionId": "tran3",
+  "Transaction": [
+    {
+    "ItemId":"a100",
+    "price": 200
+    },
+    {
+    "ItemId":"a110",
+    "price": 200   
+    }
+  ],
+  "Subscriber": true,
+  "Payment": {
+    "Type": "Credit-Card",
+    "Total": 400,
+    "Success": true
+  }
+},
+{
+    "_id": 103,
+    "Name": "Dylan",
+    "TransactionId": "tran4",
+  "Transaction": [
+    {
+    "ItemId":"a100",
+    "price": 200
+    },
+    {
+    "ItemId":"a110",
+    "price": 200   
+    }
+  ],
+  "Subscriber": true,
+  "Payment": null,
+  "Note": "Payment is Null"
+}]
+)

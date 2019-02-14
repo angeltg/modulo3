@@ -1,0 +1,57 @@
+
+db.movies.update({_id:1},{title:'Fight Club',writer:'Chuck Palahniuk',year:1999,actors:['Brad Pitt','Edward Norton']})
+db.movies.update({_id:2},{title:'Pulp Fiction',writer:'Quentin Tarantino',year:1994,actors:['John Travolta','Uma Thurman']})
+db.movies.update({_id:3},{title:'Inglorious Basterds',writer:'Quentin Tarantino',year:2009,actors:['Brad Pitt','Diane Kruger','Eli Roth']})
+db.movies.update({_id:4},{title:'The Hobbit: An Unexpected Journey',writer:'J.R.R. Tolkein',year:2012,franchise:'The Hobbit'},{upsert:true})
+db.movies.update({_id:5},{title:'The Hobbit: The Desolation of Smaug',writer:'J.R.R. Tolkein',year:2013,franchise:'The Hobbit'},{upsert:true})
+db.movies.update({_id:6},{title:'The Hobbit: The Battle of the Five Armies',writer:'J.R.R. Tolkein',year:2012,franchise:'The Hobbit',synopsis : 'Bilbo and Company are forced to engage in a war against an array of combatants and keep the Lonely Mountain from falling into the hands of a rising darkness.'
+}) 
+db.movies.update({_id:7},{title:'Pee Wee Herman`s Big Adventure'},{upsert:true})
+db.movies.update({_id:8},{title:'Avatar'},{upsert:true})
+
+CONSULTAS
+
+Obtener todos los documentos
+db.movies.find();
+Obtener documentos con writer igual a "Quentin Tarantino"
+db.movies.find({writer:'Quentin Tarantino'})
+Obtener documentos con actors que incluyan a  "Brad Pitt"
+db.movies.find({actors:'Brad Pitt'})
+Obtener documentos con franchise igual a "The Hobbit"
+db.movies.find({franchise:'The Hobbit'})
+Obtener todas las películas de los 90s.
+db.movies.find({year:{$gt:1990,$lte:1999}})
+Obtener las películas estrenadas entre el año 2000 y 2010
+db.movies.find({year:{$gt:2000,$lte:2010}})
+
+ACTUALIZAR DOCUMENTOS
+
+Agregar sinopsis a "The Hobbit: An Unexpected Journey" : "A reluctant hobbit, Bilbo Baggins, sets out to the Lonely Mountain with a spirited group of dwarves to reclaim their mountain home - and the gold within it - from the dragon Smaug."
+db.movies.update({_id:4},{title:'The Hobbit: An Unexpected Journey',writer:'J.R.R. Tolkein',year:2012,franchise:'The Hobbit',synopsis:'A reluctant hobbit, Bilbo Baggins, sets out to the Lonely Mountain with a spirited group of dwarves to reclaim their mountain home - and the gold within it - from the dragon Smaug.'})
+
+Agregar sinopsis a "The Hobbit: The Desolation of Smaug" : "The dwarves, along with Bilbo Baggins and Gandalf the Grey, continue their quest to reclaim Erebor, their homeland, from Smaug. Bilbo Baggins is in possession of a mysterious and magical ring."
+db.movies.update({_id:5},{title:'The Hobbit: The Desolation of Smaug',writer:'J.R.R. Tolkein',year:2013,franchise:'The Hobbit',synopsis:'The dwarves, along with Bilbo Baggins and Gandalf the Grey, continue their quest to reclaim Erebor, their homeland, from Smaug. Bilbo Baggins is in possession of a mysterious and magical ring.'})
+
+Agregar una actor llamado "Samuel L. Jackson" a la película "Pulp Fiction"
+db.movies.update({_id:2},{title:'Pulp Fiction',writer:'Quentin Tarantino',year:1994,actors:['John Travolta','Uma Thurman','Samuel L. Jackson']})
+
+BÚSQUEDAS 
+
+Encontrar las películas que en la sinopsis contengan la palabra "Bilbo"
+db.movies.find({synopsis:{$regex:'Bilbo'}})
+Encontrar las películas que en la sinopsis contengan la palabra "Gandalf"
+db.movies.find({synopsis:{$regex:'Gandalf'}})
+Encontrar las películas que en la sinopsis contengan la palabra "Bilbo" y no la palabra "Gandalf"
+db.movies.find({$and:[{synopsis:{$regex:'Bilbo'}},{synopsis:{$not:/Gandalf/}}]})
+Encontrar las películas que en la sinopsis contengan la palabra "dwarves" ó "hobbit"
+db.movies.find({$or:[{synopsis:{$regex:'dwarves'}},{synopsis:{$regex:'hobbit'}}]})
+
+Encontrar las películas que en la sinopsis contengan la palabra "gold" y "dragon"
+db.movies.find({$and:[{synopsis:{$regex:'gold'}},{synopsis:{$regex:'dragon'}}]})
+
+ELIMINAR
+
+Eliminar la película "Pee Wee Herman's Big Adventure"
+db.movies.remove({title:'Pee Wee Herman`s Big Adventure'})
+Eliminar la película "Avatar"
+db.movies.remove({title:'Avatar'})

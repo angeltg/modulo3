@@ -332,9 +332,13 @@
 -- over all the districts. Make sure your query ignores empty postal codes and district names.
 
 -- Pide el distrito que tenga el código postal menor de su distrito que sea el mayor de todos los distritos?
-  select district, postal_code from address
-  where postal_code <> '' and district <> ''
-  order by district, postal_code desc;
+ --  select district, postal_code from address
+--   where postal_code <> '' and district <> ''
+--   order by district, postal_code desc;
+--   
+ --  select district, postal_code from address
+--  where postal_code <> '' and district <> ''
+--  order by district desc, postal_code asc limit 1;
 -- 
  
 -- 9. Find the names (first and last) of all the actors and costumers whose first name is the same as the
@@ -343,11 +347,20 @@
 -- this question, but you need to provide only one solution.
 
 -- No consigo que no muestre el actor con id 8
-select a.first_name, a.last_name, a.actor_id, c.first_name, c.last_name from customer as c
-inner join	actor as a on a.actor_id = 8
-where c.first_name = a.first_name;
-
-
+ -- select a.first_name, a.last_name, a.actor_id, c.first_name, c.last_name from customer as c
+--  inner join	actor as a on c.first_name = a.first_name
+--  where a.actor_id = 8;
+-- -- 
+select  c.first_name, c.last_name, c.customer_id
+ from customer as c
+ inner join    actor as a on c.first_name = a.first_name
+ where a.actor_id = 8
+ union all
+ select  a2.first_name, a2.last_name, a2.actor_id
+ from actor as a2
+ inner join    actor as a3 on a2.first_name = a3.first_name
+ where a3.actor_id = 8 and a2.actor_id<>8;
+-- 
 -- 10. Give an interesting query of your own that is not already in the assignment. The query should
 -- involve an aggregation operation, and a nested SELECT. Give, along with the query, the English
 -- explanation and the answer.

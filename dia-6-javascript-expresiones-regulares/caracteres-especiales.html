@@ -1,0 +1,266 @@
+<html>
+    <body>
+        <table class="fullwidth-table">
+            <caption>Caracteres especiales para expresiones regulares.</caption>
+            <thead>
+             <tr>
+              <th scope="col">carácter</th>
+              <th scope="col">Significado</th>
+             </tr>
+            </thead>
+            <tbody>
+             <tr>
+              <td><a id="special-backslash" href="#special-backslash" name="special-backslash"><code>\</code></a></td>
+              <td>
+               <p>Buscará coincidencias conforme a las siguientes reglas:<br>
+                <br>
+                Una barra invertida precediendo un carácter no especial indica que éste debe ser interpretado como un carácter especial y no de forma literal. Por ejemplo, una '<code>b</code>' sin '\' precediéndole coincidirá con cualquier 'b' minúscula en la cadena, sin embargo, '<code>\b</code>' no coincidirá con algún carácter en específico; representará el <a href="#special-word-boundary" title="# Especial de límite de palabra">delimitador especial de palabras</a>.<br>
+                <br>
+                Una barra invertida que precede a un carácter especial indica que éste deberá ser interpretado literalmente, esto es, como un carácter simple y no como un carácter especial. A esto se le demonina <code>escapado</code>. Por ejemplo, en el patrón <code>/a*/</code> el '*' indica que se deberá buscar una secuencia de 'a' cero o más veces; por el contrario, el cambiar el patrón a  <code>/a\*/</code> , el carácter especial es interpretado como un carácter simple, y cadenas como 'a*' harán coincidencia.<br>
+                <br>
+                No se olvide de <em>escapar</em> la propia barra invertida al usarla en expresiones regulares con cadenas - RegExp("patron") - ya que la \ es un carácter de escapado en cadenas.</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-caret" href="#special-caret" name="special-caret"><code>^</code></a></td>
+              <td>Coincide con el principio de la entrada. Si el interruptor o bandera de multilínea está activada, también coincidirá inmediatamente después de un salto de línea.<br>
+               <br>
+               Por ejemplo, <code>/^A/</code> no coincide con la 'A' en "an A", pero sí con la 'A' en "An E".<br>
+               <br>
+               El carácter '<code>^</code>' tiene un significado diferente cuando aparece como el primer carácter en un patrón tipo conjunto o grupo. Véase <a href="#special-negated-character-set" title="#-Negada-character-set especial">patrones complementarios</a> para mayores detalles y ejemplos.</td>
+             </tr>
+             <tr>
+              <td><a id="special-dollar" href="#special-dollar" name="special-dollar"><code>$</code></a></td>
+              <td>
+               <p>Busca el final de la entrada. Si interruptor o bandera de multilínea se establece en <code>true</code>, también buscará inmediatamente antes de un carácter de salto de línea.</p>
+           
+               <p>Por ejemplo, la expresión <code>/r$/</code> no encontrará el carácter 'r' en la cadena "cenaremos", pero sí la encontrará en la cadena "cenar".</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-asterisk" href="#special-asterisk" name="special-asterisk"><code>*</code></a></td>
+              <td>
+               <p>Busca el carácter precedente 0 (cero) o más veces. Es equivalente a {0,}.</p>
+           
+               <p>Por ejemplo, la expresión <code>/bo*/</code> encontrará la subcadena 'boooo' en la cadena "Y el fantasma hizo boooo" y el carácter 'b' en la cadena "Un pajaro bebía agua", pero no encontrará nada en la cadena "Un perro ladró".</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-plus" href="#special-plus" name="special-plus"><code>+</code></a></td>
+              <td>
+               <p>Busca el carácter precedente 1 o más veces. Es equivalente a {1,}.</p>
+           
+               <p>Por ejemplo, la expresión <code>/u+/</code> encontrará el carácter 'u' en la cadena "dulce" y todos los caracteres 'u' en la cadena "duuuuulce".</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-questionmark" href="#special-questionmark" name="special-questionmark"><code>?</code></a></td>
+              <td>Busca el carácter precedente 0 (cero) o 1 (una) vez. Es equivalente a<code> {0,1}</code>.<br>
+               <br>
+               Por ejemplo, la expresión <code>/e?le?/</code> encontrará la subcadena 'el' en la cadena "angel" y la subcadena 'le' en la cadena "abominable" y también el carácter 'l' en la cadena "muslo".<br>
+               <br>
+               Si se utiliza inmediatamente después que cualquiera de los cuantificadores *, +, ?, o {}, hace que el cuantificador no sea expansivo (encontrando la menor cantidad posible de caracteres), en comparación con el valor predeterminado, que sí es expansivo (encontrando tantos caracteres como le sea posible). Por ejemplo, aplicando la expresión <code>/\d+/</code> a la cadena "123abc" encuentra "123". Pero aplicando la expresión <code>/\d+?/</code> a la misma cadena, encuentra solamente el carácter "1".<br>
+               <br>
+               También se utiliza en coincidencias previsivas, como se describe en las entradas <code>x(?=y)</code>  y  <code>x(?!y)</code> de esta tabla.<br>
+                </td>
+             </tr>
+             <tr>
+              <td><a id="special-dot" href="#special-dot" name="special-dot"><code>.</code></a></td>
+              <td>
+               <p>(El punto decimal) coincide con cualquier carácter precedente excepto un carácter de nueva línea.</p>
+           
+               <p>Por ejemplo , <code>/.n/</code> coincide 'an' y 'on' en "nay, an apple is on the tree", pero no 'nay'.</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-capturing-parentheses" href="#special-capturing-parentheses" name="special-capturing-parentheses"><code>(x)</code></a></td>
+              <td>
+               <p>Busca 'x' y recuerda la búsqueda, como muestra el siguiente ejemplo. Los paréntesis son llamados <em>paréntesis de captura</em>. <br>
+                <br>
+                El '<code>(foo)</code>' y '<code>(bar)</code>' en el patrón  <code>/(foo) (bar) \1 \2/</code> busca y recuerda las primeras dos palabras en el string  "foo bar foo bar". El <code>\1 y</code> <code>\2</code> en el patron hacen que coincida las dos últimas palabras de la cadena. Note que <code>\1, \2, \n</code> son usados en la parte donde se define la expresión regular. Cuando se usan en la parte de reemplazo, se debe usar la sintaxis  <code>$1</code>, <code>$2</code>, ..., <code> $n</code> en su lugar  <code>'bar foo'.replace( /(...) (...)/, '$2 $1' )</code>. <span lang="es" class="short_text" id="result_box"><span>$ &amp; significa la secuencia completa.  </span></span> </p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-non-capturing-parentheses" href="#special-non-capturing-parentheses" name="special-non-capturing-parentheses"><code>(?:x)</code></a></td>
+              <td>Coincide con 'x' pero no recuerda la coincidencia. Los paréntesis son llamados paréntesis no capturadores, y permiten definir subexpresiones para manipular con los operadores de las expresiones regulares. Considera la expresión de ejemplo <code>/(?:foo){1,2}/</code>.  Si la expresión fuera <code>/(foo){1,2}/</code>, los caracteres <code>{1,2}</code>  se aplicarían sólo a la última 'o' en 'foo'. Con los paréntesis no capturadores, <code>{1,2}</code> se aplica a la palabra entera 'foo'. Para mayor información, mira <a href="#usando_parentesis">Usando paréntesis</a> mas abajo en este artículo.</td>
+             </tr>
+             <tr>
+              <td><a id="special-lookahead" href="#special-lookahead" name="special-lookahead"><code>x(?=y)</code></a></td>
+              <td>
+               <p>Coincide con 'x' sólo si 'x' es seguida por 'y'. Esto se denomina previsión (lookahead, mirar adelante).</p>
+           
+               <p>Por ejemplo, <code>/Jack(?=Sprat)/</code> coincide con 'Jack' solo si es seguido por 'Sprat'. <code>/Jack(?=Sprat|Frost)/</code> conicide con 'Jack' solo si es seguido por 'Sprat' o 'Frost'. Sin embargo, ni 'Sprat' ni 'Frost' serán parte del resultado.</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-negated-look-ahead" href="#special-negated-look-ahead" name="special-negated-look-ahead"><code>x(?!y)</code></a></td>
+              <td>
+               <p>Coincide con 'x' solo si 'x' no es seguida por 'y'. Es una previsión negativa.</p>
+           
+               <p>Por ejemplo, <code>/\d+(?!\.)/</code> coincide con numeros solo si no vienen seguidos por un punto decimal. La expresion regular <code>/\d+(?!\.)/.exec("3.141")</code> coincide con '141' pero no con '3.141'.</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-or" href="#special-or" name="special-or"><code>x|y</code></a></td>
+              <td>
+               <p>Coincide con 'x' o 'y' <span lang="es" class="short_text" id="result_box"><span>(si no hay coincidencias para 'x')</span></span>.</p>
+           
+               <p>Por ejemplo, <code>/green|red/</code> coincide con 'green' en "green apple" y 'red' en "red apple."</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-quantifier" href="#special-quantifier" name="special-quantifier"><code>{n}</code></a></td>
+              <td>Coincide exactamente con n ocurrencias de la expresión. N debe ser un entero positivo.<br>
+               <br>
+               Por ejemplo, <code>/a{2}/</code> no coincide con la 'a' en "candy," pero si con las a de "caandy," y las 2 primeras a en "caaandy."</td>
+             </tr>
+             <tr>
+              <td><a id="special-quantifier-range" href="#special-quantifier-range" name="special-quantifier-range"><code>{n,m}</code></a></td>
+              <td>
+               <p>Donde <code>n</code> y <code>m</code> son enteros positivos y n &lt;= m. Coincide con al menos <code>n</code> y no más de <code>m</code> ocurrencias de la expresión. Si se omite <code>m</code>, no tiene limite de máximo.</p>
+           
+               <p>Por ejemplo, <code>/a{1,3}/</code> no coincide con "cndy", pero sí con la 'a' en "candy," las primeras 2 a en "caandy," y las primeras 3 <code>a</code> en "caaaaaaandy". Note que en "caaaaaaandy", la coincidencia es "aaa", aunque la cadena contenga más <code>a</code> en ella.</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-character-set" href="#special-character-set" name="special-character-set"><code>[xyz]</code></a></td>
+              <td>Grupo de caracteres. Este tipo de patrón coincide con cada carácter dentro de los corchetes, incluyendo <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Values,_variables,_and_literals#Unicode_escape_sequences" title="https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Values,_variables,_and_literals#Unicode_escape_sequences">secuencias de escapado</a>. Caracteres especiales como el punto (<code>.</code>) y el asterisco (<code>*</code>) no son especiales en un grupo, así que no necesitan ser escapados. Puede especificar un rango utilizando un guión, como en el siguiente ejemplo.<br>
+               <br>
+               El patrón <code>[a-d]</code>, que equivale a <code>[abcd]</code>, coincide con la 'b' en "brisket" y la 'c' in "city". El patrón <code>/[a-z.]+/</code> y <code>/[\w.]+/</code> coinciden con toda la cadena "test.i.ng".</td>
+             </tr>
+             <tr>
+              <td><a id="special-negated-character-set" href="#special-negated-character-set" name="special-negated-character-set"><code>[^xyz]</code></a></td>
+              <td>
+               <p>Grupo de caracteres negativo. Significa que coincide con cualquier cosa que no esté en los corchetes. Puede especificar rangos. Todo lo que funciona en el grupo de caracteres positivo funciona también aquí.</p>
+           
+               <p>Por ejemplo, <code>[^abc]</code> es lo mismo que <code>[^a-c]</code>, y coincide con la 'r' en "brisket" y 'h' en "chop."</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-backspace" href="#special-backspace" name="special-backspace"><code>[\b]</code></a></td>
+              <td>Coincide con backspace (U+0008). Debe ir entre corchetes. (No confundir con <code>\b</code>.)</td>
+             </tr>
+             <tr>
+              <td><a id="special-word-boundary" href="#special-word-boundary" name="special-word-boundary"><code>\b</code></a></td>
+              <td>
+               <p>Coincide con un <em>limite de palabra</em>. Un <em>limite de palabra</em> coincide con la posición entre donde un carácter de palabra no viene precedido o seguido por otro. Nótese que el límite no estará incluido en la coincidencia. En otras palabras, la longitud del limite es cero. (No confundir con <code>[\b]</code>.)</p>
+           
+               <p>Ejemplos:<br>
+                <code>/\bm/</code> coincide con la 'm' de "moon" ;<br>
+                <code>/oo\b/</code> no tiene coincidencias en "moon", porque las 'oo' estan seguidas de una 'n' que es un carácter de palabra;<br>
+                <code>/oon\b/</code> coincide con 'oon' en "moon", porque 'oon' es el final de la cadena, por lo cual no va seguido de un carácter de palabra;<br>
+                <code>/\w\b\w/</code> no coincidirá con nada, porque un carácter de palabra no puede estar seguido por ambos, un limite y un carácter de palabra.</p>
+           
+               <div class="note">
+               <p><strong>Nota:</strong> El motor de expresiones regulares de JavaScript define un <a rel="noopener" href="http://www.ecma-international.org/ecma-262/5.1/#sec-15.10.2.6" class="external">conjunto específico de caracteres</a> que son caracteres "palabra". Cualquier caracter que no está en ese conjunto se considera una ruptura de palabra. Este conjunto de caracteres es bastante limitado: consiste consiste únicamente en el alfabeto romano, tanto en mayúscula como minúscula, dígitos decimales, y el caracter de subrayado. Los caracteres acentuados, como "é" o "ü" son tratados, desafortunadamente, como rupturas de palabra.</p>
+               </div>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-non-word-boundary" href="#special-non-word-boundary" name="special-non-word-boundary"><code>\B</code></a></td>
+              <td>
+               <p>Coincide con un <em>no-limite de palabra</em>. Esto coincide con una posicion donde el anterior y el siguiente carácter son del mismo tipo: ambos son o no son caracteres de palabra. El inicio y el final de una cadena se consideran <em>no palabras</em>.</p>
+           
+               <p>Por ejemplo, <code>/\B../</code> coincide con 'oo' en "noonday", y <code>/y\B./</code> coincide con 'ye' en "possibly yesterday."</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-control" href="#special-control" name="special-control"><code>\c<em>X</em></code></a></td>
+              <td>
+               <p>Donde <em>X</em> es un carácter entre A y Z. Coincide con un carácter de control en un string.</p>
+           
+               <p>Por ejemplo, <code>/\cM/</code> coincide con control-M (U+000D) en un string.</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-digit" href="#special-digit" name="special-digit"><code>\d</code></a></td>
+              <td>
+               <p>Coincide con un carácter de número. Equivalente a <code>[0-9]</code>.</p>
+           
+               <p>Por ejemplo, <code>/\d/</code> or <code>/[0-9]/</code> coinciden con el '2' en "B2 is the suite number."</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-non-digit" href="#special-non-digit" name="special-non-digit"><code>\D</code></a></td>
+              <td>
+               <p>Coincide con cualquier carácter no numérico. Equivalente a <code>[^0-9]</code>.</p>
+           
+               <p>Por ejemplo, <code>/\D/</code> or <code>/[^0-9]/</code> coincide con la 'B' en "B2 is the suite number."</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-form-feed" href="#special-form-feed" name="special-form-feed"><code>\f</code></a></td>
+              <td>Coincide con un form feed (salto de página) (U+000C).</td>
+             </tr>
+             <tr>
+              <td><a id="special-line-feed" href="#special-line-feed" name="special-line-feed"><code>\n</code></a></td>
+              <td>Coincide con un line feed (salto de linea) (U+000A).</td>
+             </tr>
+             <tr>
+              <td><a id="special-carriage-return" href="#special-carriage-return" name="special-carriage-return"><code>\r</code></a></td>
+              <td>Coincide con un carriage return (retorno de carro) (U+000D).</td>
+             </tr>
+             <tr>
+              <td><a id="special-white-space" href="#special-white-space" name="special-white-space"><code>\s</code></a></td>
+              <td>
+               <p>Coincide con un <em>carácter de espacio</em>, entre ellos incluidos espacio, tab, salto de página, salto de linea y retorno de carro. Equivalente a <code>[\f\n\r\t\v​\u00a0\u1680​\u180e\u2000​\u2001\u2002​\u2003\u2004​\u2005\u2006​\u2007\u2008​\u2009\u200a​\u2028\u2029​​\u202f\u205f​\u3000]</code>.</p>
+           
+               <p>Por ejemplo, <code>/\s\w*/</code> coincide con ' bar' en "foo bar."</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-non-white-space" href="#special-non-white-space" name="special-non-white-space"><code>\S</code></a></td>
+              <td>
+               <p>Coincide con todo menos <em>caracteres de espacio</em>. Equivalente a <code>[^ \f\n\r\t\v​\u00a0\u1680​\u180e\u2000​\u2001\u2002​\u2003\u2004​\u2005\u2006​\u2007\u2008​\u2009\u200a​\u2028\u2029​\u202f\u205f​\u3000]</code>.</p>
+           
+               <p>Por ejemplo, <code>/\S*/</code> coincide con 'foo' en "foo bar."</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-tab" href="#special-tab" name="special-tab"><code>\t</code></a></td>
+              <td>Coincide con tab (U+0009).</td>
+             </tr>
+             <tr>
+              <td><a id="special-vertical-tab" href="#special-vertical-tab" name="special-vertical-tab"><code>\v</code></a></td>
+              <td>Coincide con tab vertical (U+000B).</td>
+             </tr>
+             <tr>
+              <td><a id="special-word" href="#special-word" name="special-word"><code>\w</code></a></td>
+              <td>
+               <p>Coincide con cualquier carácter alfanumérico, incluyendo el guión bajo. Equivalente a <code>[A-Za-z0-9_]</code>.</p>
+           
+               <p>Por ejemplo, <code>/\w/</code> coincide con 'a' en "apple," '5' en "$5.28," y '3' en "3D."</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-non-word" href="#special-non-word" name="special-non-word"><code>\W</code></a></td>
+              <td>
+               <p>Coincide con todo menos <em>caracteres de palabra</em>. Equivalente a <code>[^A-Za-z0-9_]</code>.</p>
+           
+               <p>Por ejemplo, <code>/\W/</code> o <code>/[^A-Za-z0-9_]/</code> coinciden con '%' en "50%."</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-backreference" href="#special-backreference" name="special-backreference"><code>\<em>n</em></code></a></td>
+              <td>
+               <p>Cuando <em>n</em> es un entero positivo, es una referencia hacia alguna subcadena de paréntesis dentro de la misma expresion que coincida con el número (contando los paréntesis izquierdos).</p>
+           
+               <p>Por ejemplo, <code>/apple(,)\sorange\1/</code> coincide con 'apple, orange,' en "apple, orange, cherry, peach."</p>
+              </td>
+             </tr>
+             <tr>
+              <td><a id="special-null" href="#special-null" name="special-null"><code>\0</code></a></td>
+              <td>Coincide con el carácter NULL (U+0000). No preseda este por otro número, ya que <code>\0&lt;numero&gt;</code> se considera una secuencia octal <a href="https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Values,_variables,_and_literals#Unicode_escape_sequences" title="https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Values,_variables,_and_literals#Unicode_escape_sequences">escapada</a>.</td>
+             </tr>
+             <tr>
+              <td><a id="special-hex-escape" href="#special-hex-escape" name="special-hex-escape"><code>\xhh</code></a></td>
+              <td>Coincide con un carácter en exadecimal hh (dos dígitos hexadecimales)</td>
+             </tr>
+             <tr>
+              <td><a id="special-unicode-escape" href="#special-unicode-escape" name="special-unicode-escape"><code>\uhhhh</code></a></td>
+              <td>Coincide con un carácter unicode con el código hhhh (cuatro dígitos hexadecimales).</td>
+             </tr>
+            </tbody>
+           </table>
+    </body>
+</html>
