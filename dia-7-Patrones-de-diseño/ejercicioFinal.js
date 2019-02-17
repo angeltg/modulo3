@@ -55,15 +55,12 @@ class Nave {
     this.estado = estado;
   }
   disparar() {
-    this.seleccionObgetivo();
-    this.recibirDisparo();
-  }
-  seleccionObgetivo() {}
-  disparar() {
     return this.potencia;
   }
+  //Resta del escudo la potencia de disparo recibida y devuelve el estado
   recibirDisparo(potencia) {
     this.escudo = this.escudo - potencia;
+    return this.escudo;
   }
 }
 
@@ -108,6 +105,7 @@ class GeneradorNaves {
     return ejercito;
   }
 
+  //Dependiendo del tipo de nave creo un objeto y otro.
   crearNave(ejercito, cantidad, tipo) {
     for (let index = 1; index <= cantidad; index++) {
       let empiezanave;
@@ -136,37 +134,49 @@ class CampoBatalla {
     this.sector1 = new Sector();
     this.sector2 = new Sector();
   }
+
+  //Coloca los ejercitos en el campo de batalla y empiezan los turnos de disparo
   empezarBatalla(ejercito1, ejercito2) {
     this.colocarEjercitos(ejercito1, ejercito2);
     return this.controlDeTurnos(ejercito1, ejercito2);
   }
   colocarEjercitos(ejercito1, ejercito2) {
     this.sector1.colocarNaves(ejercito1);
+    //Al ejército le paso el sector para que el código de ejecutar turno se más legible
     ejercito1.sector = this.sector1;
     this.sector2.colocarNaves(ejercito2);
     ejercito2.sector = this.sector2;
   }
+
+  //Mostramos por consola el etado de los 2 ejércitos
+  mostrarEstadoEquipos(ejercito1, ejercito2) {
+    console.log(
+      "Al " +
+        ejercito1.nombre +
+        " le quedan " +
+        ejercito1.sector.inventarioNaves() +
+        " naves"
+    );
+    console.log(
+      "A " +
+        ejercito2.nombre +
+        " le quedan " +
+        ejercito2.sector.inventarioNaves() +
+        " naves"
+    );
+  }
   controlDeTurnos(ejercito1, ejercito2) {
     let ataque = ejercito1;
     let defensa = ejercito2;
+    //Mostramos con cuantas naves cuenta cada ejército
+    this.mostrarEstadoEquipos(ejercito1, ejercito2);
     while (!ejercito1.derrotado && !ejercito2.derrotado) {
-      console.log(
-        "Al " +
-          ejercito1.nombre +
-          " le quedan " +
-          ejercito1.sector.inventarioNaves() +
-          " naves"
-      );
-      console.log(
-        "A " +
-          ejercito2.nombre +
-          " le quedan " +
-          ejercito2.sector.inventarioNaves() +
-          " naves"
-      );
+      //Si es true es que se ha destruído una nave. Entonces mostramos estado de los ejércitos
+      if (this.ejecutarTurno(ataque, defensa)) {
+        this.mostrarEstadoEquipos(ejercito1, ejercito2);
+      }
 
-      this.ejecutarTurno(ataque, defensa);
-
+      //Cambio de turno
       if (ataque == ejercito1) {
         ataque = ejercito2;
         defensa = ejercito1;
@@ -189,28 +199,45 @@ class CampoBatalla {
     }
   }
 
-  ejecutarTurno(ejercitoataque, ejercitodefensa) {
-    let posicion1 = ejercitoataque.sector.randomNaves();
-    let posicion2 = ejercitodefensa.sector.randomNaves();
-
+  //Mostramos por consola quien dispara, con qué potencia, a quién y con qué se defiende
+  mostrarDisparo(ejercitoataque, ejercitodefensa, posicion1, posicion2) {
     console.log(
       ejercitoataque.listadoNaves[posicion1].nombre +
+        " con " +
+        ejercitoataque.listadoNaves[posicion1].potencia +
+        " de potencia" +
         " de " +
         ejercitoataque.nombre +
         " dispara a la " +
         ejercitodefensa.sector.poscionNaves[posicion2].nombre +
+        " con " +
+        ejercitodefensa.sector.poscionNaves[posicion2].escudo +
+        " de escudo" +
         " de " +
         ejercitodefensa.nombre
     );
-    ejercitodefensa.sector.poscionNaves[posicion2].recibirDisparo(
-      ejercitoataque.listadoNaves[posicion1].disparar()
-    );
-    // si la vida de la nave es menor que 0 la borro del array
-    if (ejercitodefensa.sector.poscionNaves[posicion2].escudo < 0) {
+  }
+
+  ejecutarTurno(ejercitoataque, ejercitodefensa) {
+    // Hacemos el random de la posición de disparo y de la posición de recepción del disparo
+    let posicion1 = ejercitoataque.sector.randomNaves();
+    let posicion2 = ejercitodefensa.sector.randomNaves();
+
+    //Mostramos por consola quien dispara, con qué potencia, a quién y con qué se defiende
+    this.mostrarDisparo(ejercitoataque, ejercitodefensa, posicion1, posicion2);
+
+    //Recibir el disparo nos devuelve el estado de la nave
+    let estadoDeLaNave = ejercitodefensa.sector.poscionNaves[
+      posicion2
+    ].recibirDisparo(ejercitoataque.listadoNaves[posicion1].disparar());
+    // si la vida de la nave es menor que 0 la borro del array del sector
+    if (estadoDeLaNave <= 0) {
       ejercitodefensa.sector.borrarNave(posicion2);
       console.log("PUM!! Nave destruída");
       console.log(" ");
+      return true;
     }
+    return false;
   }
 }
 
@@ -219,17 +246,21 @@ class Sector {
     this.poscionNaves = [];
   }
 
+  //Devuleve un random sobre las posiciones del total del array
   randomNaves() {
     return Math.floor(Math.random() * this.poscionNaves.length) + 0;
   }
+  //Nos dice las naves que quedan en el sector
   inventarioNaves() {
     return this.poscionNaves.length;
   }
+  //Coloca las naves en el sector. El orden es el mismo ya que la aleatoriedad la gestiono en el turno.
   colocarNaves(ejercito) {
     ejercito.listadoNaves.forEach(element => {
       this.poscionNaves.push(element);
     });
   }
+  //La nave que se ha quedado sin escudo es eliminada del array del sector
   borrarNave(posicion) {
     // Borra 1 elemento desde la posicion
     this.poscionNaves.splice(posicion, 1);
@@ -245,5 +276,3 @@ let campoDeBatalla = new CampoBatalla();
 let ganador = campoDeBatalla.empezarBatalla(ejercito1, ejercito2);
 
 console.log("LA GALAXIA ES DE " + ganador.nombre);
-
-//(si son distintos se generan partidas desiguales, asi que habrá que controlar esto al añadir los ejercitos)
