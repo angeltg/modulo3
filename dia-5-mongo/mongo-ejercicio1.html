@@ -23,93 +23,71 @@ db.clientes.find()
 
 db.createCollection('transactions')
 
-Esto me daba error
+Esto me daba error. He tenido que abrir otra consola para que funcione.
 mongoimport --db usermanaged --collection transactions --file /home/angeltellez/Documents/javascript/modulo3/dia-5-mongo/transaction.json --jsonArray
 
+mongoimport --jsonArray --collection transactions --file /home/angeltellez/Documents/javascript/modulo3/dia-5-mongo/transaction.json 
 
-db.transactions.insert([
-{
-    "_id": 100,
-    "Name": "John",
-    "TransactionId": "tran1",
-  "Transaction": [
-    {
-    "ItemId":"a100",
-    "price": 200
-    },
-    {
-    "ItemId":"a110",
-    "price": 200   
-    }
-  ],
-  "Subscriber": true,
-  "Payment": {
-    "Type": "Credit-Card",
-    "Total": 400,
-    "Success": true
-  },
-  "Note": "1st Complete Record"
-}
-,
-{
-    "_id": 101,
-    "Name": "Tom",
-    "TransactionId": "tran2",
-  "Transaction": [
-    {
-    "ItemId":"a100",
-    "price": 200
-    },
-    {
-    "ItemId":"a110",
-    "price": 200   
-    }
-  ],
-  "Subscriber": true,
-  "Payment": {
-    "Type": "Debit-Card",
-    "Total": 400,
-    "Success": true
-  },
-  "Note":null
-},
-{
-    "_id": 102,
-    "Name": "Margaret",
-    "TransactionId": "tran3",
-  "Transaction": [
-    {
-    "ItemId":"a100",
-    "price": 200
-    },
-    {
-    "ItemId":"a110",
-    "price": 200   
-    }
-  ],
-  "Subscriber": true,
-  "Payment": {
-    "Type": "Credit-Card",
-    "Total": 400,
-    "Success": true
-  }
-},
-{
-    "_id": 103,
-    "Name": "Dylan",
-    "TransactionId": "tran4",
-  "Transaction": [
-    {
-    "ItemId":"a100",
-    "price": 200
-    },
-    {
-    "ItemId":"a110",
-    "price": 200   
-    }
-  ],
-  "Subscriber": true,
-  "Payment": null,
-  "Note": "Payment is Null"
-}]
-)
+He tenido que abrir otra consola para que funcione
+mongoimport --db usermanaged --collection transactions --file /home/angeltellez/Documents/javascript/modulo3/dia-5-mongo/transaction.json --jsonArray
+
+5 consultas
+
+1. Encuentra cualquier registro donde el Nombre es Tom
+
+db.transactions.find({'Name':'Tom'})
+
+2. Encuentra cualquier registro donde el modo de pago total (pago.total) es 400.
+db.transactions.find({'Payment.Total':400})
+
+3. Encuentre cualquier registro donde el precio (Transaction.price) sea mayor que 400 
+
+db.transactions.find({'Transaction.price':{ $gt: 400}})
+
+4. Busque cualquier registro donde Note sea nulo o falte la clave.
+db.transactions.find({Note:null})
+
+5. Encuentre cualquier registro donde exista Nota y su valor sea nulo.
+db.transactions.find({Note:{$exists:true}})
+
+6. Encuentre cualquier registro donde no exista la clave de nota.
+db.transactions.find({Note:{$exists:false}})
+
+Agregación con MongoDB
+
+1. Calcule el montante total de la transacción sumando Pago.Total en todos los registros.
+
+db.transactions.aggregate({$group:{_id:"",Total:{$sum:'$Payment.Total'}}})
+
+2. Obtenga el precio total por registro sumando los valores de precio en la matriz de Transacción (transaction.price)
+
+db.transactions.aggregate({$project:{Total:{$sum:'$Transaction.price'},}})
+
+3. Calcule los pagos totales (Pago.Total) para cada tipo de pago (Tipo de pago)
+
+db.transactions.aggregate([{$group:{_id:"$Payment.Type",totalAmount:{$sum:"$Payment.Total"},count:{$sum:1}}}])
+
+4. Encuentra la identificación máxima
+
+db.transactions.aggregate([{$group:{_id:'',maxid:{$max:"$_id"}}}])
+
+5. Encuentra el precio más alto.
+
+db.transactions.aggregate([{$group:{_id:'',maxprice:{$max:{$max:"$Transaction.price"}}}}])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
