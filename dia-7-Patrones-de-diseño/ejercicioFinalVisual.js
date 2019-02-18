@@ -91,6 +91,8 @@ class Ejercito {
   constructor(nombre, capa) {
     this.nombre = nombre;
     this.listadoNaves = [];
+    //La uso para desordenar las naves.
+    this.listadoNavesColocar = [];
     this.derrotado = false;
     this.sector = "";
     this.capa = capa;
@@ -99,6 +101,11 @@ class Ejercito {
   // Añado en un array las naves.
   anadirNave(nave) {
     this.listadoNaves.push(nave);
+    this.listadoNavesColocar.push(nave);
+  }
+
+  randomNavesEjercito() {
+    return Math.floor(Math.random() * this.listadoNavesColocar.length) + 0;
   }
 }
 class GeneradorNaves {
@@ -149,10 +156,10 @@ class CampoBatalla {
     return this.controlDeTurnos(ejercito1, ejercito2);
   }
   colocarEjercitos(ejercito1, ejercito2) {
-    this.sector1.colocarNaves(ejercito1, ejercito1.capa);
+    this.sector1.colocarYBorrar(ejercito1, ejercito1.capa);
     //Al ejército le paso el sector para que el código de ejecutar turno se más legible
     ejercito1.sector = this.sector1;
-    this.sector2.colocarNaves(ejercito2, ejercito2.capa);
+    this.sector2.colocarYBorrar(ejercito2, ejercito2.capa);
     ejercito2.sector = this.sector2;
   }
 
@@ -202,7 +209,8 @@ class CampoBatalla {
     let final = this.comprobarEstadoEjercitos();
     if (final) {
       document.getElementById("botondedisparo").innerHTML =
-        "<h1> LA GALAXIA HA SIDO DOMINADA POR " + final.nombre;
+        "<h1>GAME OVER</h1><h1> LA GALAXIA HA SIDO DOMINADA POR " +
+        final.nombre;
       return false;
     } else {
       return ataque;
@@ -268,6 +276,34 @@ class Sector {
     return this.poscionNaves.length;
   }
 
+  //Vamos a colocar la naves en el campo de batalla de una forma desordenada
+  colocarYBorrar(ejercito, capa) {
+    let posicionNave = ejercito.randomNavesEjercito();
+    const element = ejercito.listadoNavesColocar[posicionNave];
+    //Le doy un index a cada nave para poder cambiar su imagen por un PUM! cuando es destruída
+    ejercito.listadoNavesColocar[posicionNave].identificador =
+      capa + posicionNave;
+    this.poscionNaves.push(element);
+    let div = document.getElementById(capa);
+
+    div.innerHTML +=
+      '<li id="' +
+      capa +
+      posicionNave +
+      '"><img src="img/' +
+      element.imagen +
+      '" alt="' +
+      element.nombre +
+      '"></li>';
+    // Borra 1 elemento desde la posicion
+    ejercito.listadoNavesColocar.splice(posicionNave, 1);
+
+    //Si el array aún tiene naves volvemos a llamar a la función
+    if (ejercito.listadoNavesColocar.length > 0) {
+      this.colocarYBorrar(ejercito, capa);
+    }
+  }
+
   //Coloca las naves en el sector. El orden es el mismo ya que la aleatoriedad la gestiono en el turno.
   colocarNaves(ejercito, capa) {
     for (let index = 0; index < ejercito.listadoNaves.length; index++) {
@@ -289,7 +325,7 @@ class Sector {
         '"></li>';
     }
   }
-  //La nave que se ha quedado sin escudo es eliminada del array del sector
+  //La nave que se ha quedado sin escudo es eliminada del arraconditionconditionconditionconditiconditionconditionony del sector
   borrarNave(posicion, capa) {
     let d = document.getElementById(capa);
     let d_nested = document.getElementById(
