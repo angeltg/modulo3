@@ -54,6 +54,7 @@ class Nave {
     this.nombre = nombre;
     this.estado = estado;
     this.imagen = "Nave1.png";
+    this.imagen_danho = "Nave1.png";
     this.identificador = 0;
   }
   disparar() {
@@ -75,12 +76,14 @@ class Nave2 extends Nave {
   constructor() {
     super(5, 10, "Nave2", 100);
     this.imagen = "Nave2.png";
+    this.imagen_danho = "Nave2_danho.png";
   }
 }
 class Nave3 extends Nave {
   constructor() {
     super(8, 7, "Nave3", 100);
     this.imagen = "Nave3.png";
+    this.imagen_danho = "Nave3_danho.png";
   }
 }
 
@@ -244,6 +247,8 @@ class CampoBatalla {
       console.log(" ");
 
       return true;
+    } else {
+      ejercitodefensa.sector.danhoNave(posicion2, ejercitodefensa.capa);
     }
     return false;
   }
@@ -272,11 +277,12 @@ class Sector {
 
       this.poscionNaves.push(element);
       let div = document.getElementById(capa);
+
       div.innerHTML +=
         '<li id="' +
         capa +
         index +
-        '"><img src="/img/' +
+        '"><img src="img/' +
         element.imagen +
         '" alt="' +
         element.nombre +
@@ -291,9 +297,9 @@ class Sector {
     );
     //Antes de borrarla de la lista cambiamos la imagen por un PUM! que aguanta 1 segundo.
     if (capa == "ejercitoarriba") {
-      d_nested.innerHTML = '<img src="/img/pum.png" alt="Pum!">';
+      d_nested.innerHTML = '<img src="img/pum.png" alt="Pum!">';
     } else {
-      d_nested.innerHTML = '<img src="/img/pum-rotate.png" alt="Pum!">';
+      d_nested.innerHTML = '<img src="img/pum-rotate.png" alt="Pum!">';
     }
 
     setTimeout(function() {
@@ -304,19 +310,31 @@ class Sector {
     // Borra 1 elemento desde la posicion
     this.poscionNaves.splice(posicion, 1);
   }
+  //La nave que no ha sido destruída tiene un daño. Cambiamos la imagen.
+  danhoNave(posicion, capa) {
+    let d = document.getElementById(capa);
+    let d_nested = document.getElementById(
+      this.poscionNaves[posicion].identificador
+    );
+
+    d_nested.innerHTML =
+      '<img src="img/' +
+      this.poscionNaves[posicion].imagen_danho +
+      '" alt="Nave  dañada">';
+  }
 }
 
 let generador = new GeneradorNaves();
 
 const ejercito1 = generador.CrearEjercito(
-  "LADO OSCURO",
+  "EL LADO OSCURO",
   3,
   5,
   7,
   "ejercitoarriba"
 );
 const ejercito2 = generador.CrearEjercito(
-  "RESISTECIA",
+  "LA RESISTECIA",
   3,
   5,
   7,
